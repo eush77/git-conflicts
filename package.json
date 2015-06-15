@@ -1,0 +1,36 @@
+{
+  "name": "git-conflicts",
+  "version": "0.0.0",
+  "description": "Manual merge resolution tool",
+  "author": "Eugene Sharygin <eush77@gmail.com>",
+  "license": "MIT",
+  "preferGlobal": true,
+  "bin": {
+    "git-conflicts": "cli.js"
+  },
+  "files": [
+    "cli.js"
+  ],
+  "homepage": "https://github.com/eush77/git-conflicts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eush77/git-conflicts"
+  },
+  "bugs": {
+    "url": "https://github.com/eush77/git-conflicts/issues"
+  },
+  "keywords": [
+    "git",
+    "merge",
+    "rebase",
+    "marker",
+    "conflict",
+    "resolution",
+    "editor"
+  ],
+  "dependencies": {
+    "help-version": "^0.2.0",
+    "string-editor": "^0.1.2"
+  },
+  "devDependencies": {}
+}
