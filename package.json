@@ -9,7 +9,8 @@
     "git-conflicts": "cli.js"
   },
   "files": [
-    "cli.js"
+    "cli.js",
+    "lib/"
   ],
   "homepage": "https://github.com/eush77/git-conflicts",
   "repository": {
