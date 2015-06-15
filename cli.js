@@ -14,12 +14,14 @@ function usage() {
 }
 
 
-(function (argv) {
-  var diff = fs.readFileSync(argv[0], { encoding: 'utf8' });
-  var re = /^<<<<<<< (.|\n)*?=======(.|\n)*?>>>>>>> .*$/gm;
+var conflictRegExp = /^<<<<<<< (.|\n)*?=======(.|\n)*?>>>>>>> .*$/gm;
 
-  stringReplace(diff, re, replace, function (result) {
-    process.stdout.write(result);
+
+var resolveConflicts = function (filename) {
+  var diff = fs.readFileSync(filename, { encoding: 'utf8' });
+
+  stringReplace(diff, conflictRegExp, replace, function (result) {
+    fs.writeFileSync(filename, result);
   });
 
   function replace(cb, conflict) {
@@ -28,4 +30,9 @@ function usage() {
       cb(result);
     });
   }
+};
+
+
+(function (argv) {
+  argv.forEach(resolveConflicts);
 }(process.argv.slice(2)));
