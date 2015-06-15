@@ -44,3 +44,28 @@ test('groups', function (t) {
     t.end();
   });
 });
+
+
+test('sequence rule', function (t) {
+  var count = 0;
+
+  stringReplace('. . . .', /\s/g, next, function (result) {
+    t.equal(count, 3, 3);
+    t.end();
+  });
+
+  function next(cb) {
+    var state = count;
+    process.nextTick(function () {
+      t.equal(count, state, String(state));
+      setImmediate(function () {
+        t.equal(count, state, (state * 3 + 1) + '/3');
+        setTimeout(function () {
+          t.equal(count, state, (state * 3 + 2) + '/3');
+          count += 1;
+          cb();
+        }, 0x20);
+      });
+    });
+  }
+});
