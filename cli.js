@@ -5,7 +5,7 @@ var stringReplace = require('./lib/string-replace');
 
 var help = require('help-version')(usage()).help,
     edit = require('string-editor'),
-    split = require('transform-split');
+    byline = require('byline');
 
 var fs = require('fs'),
     spawn = require('child_process').spawn;
@@ -71,10 +71,17 @@ var enqueue = (function () {
       stdio: ['ignore', 'pipe', process.stderr]
     });
 
+    var resolved = Object.create(null);
+
     git.stdout
-      .pipe(split())
-      .on('data', function (chunk) {
-        var filename = chunk.toString().split(/\s+/)[3];
+      .pipe(byline())
+      .on('data', function (line) {
+        var filename = line.toString().split(/\s+/)[3];
+        if (resolved[filename]) {
+          return;
+        }
+
+        resolved[filename] = true;
         enqueue(filename);
       });
 
