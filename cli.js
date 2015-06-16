@@ -17,11 +17,12 @@ function usage() {
 var conflictRegExp = /^<<<<<<< (.|\n)*?=======(.|\n)*?>>>>>>> .*$/gm;
 
 
-var resolveConflicts = function (filename) {
+var resolveConflicts = function (filename, cb) {
   var diff = fs.readFileSync(filename, { encoding: 'utf8' });
 
   stringReplace(diff, conflictRegExp, replace, function (result) {
     fs.writeFileSync(filename, result);
+    cb();
   });
 
   function replace(cb, conflict) {
@@ -33,6 +34,27 @@ var resolveConflicts = function (filename) {
 };
 
 
+var enqueue = (function () {
+  var queue = [];
+
+  var check = function () {
+    if (queue.length) {
+      resolveConflicts(queue[0], function () {
+        queue.shift();
+        check();
+      });
+    }
+  };
+
+  return function (entry) {
+    queue.push(entry);
+    if (queue.length == 1) {
+      check();
+    }
+  };
+}());
+
+
 (function (argv) {
-  argv.forEach(resolveConflicts);
+  argv.forEach(enqueue);
 }(process.argv.slice(2)));
