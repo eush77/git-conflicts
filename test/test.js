@@ -46,6 +46,23 @@ test('groups', function (t) {
 });
 
 
+test('next-tick business', function (t) {
+  var count = 0;
+
+  stringReplace(' ', /\s/g, inc, function () {
+    t.equal(count, 1);
+    t.end();
+  });
+
+  t.equal(count, 0);
+
+  function inc(cb) {
+    count += 1;
+    cb();
+  }
+});
+
+
 test('sequence rule', function (t) {
   var count = 0;
 
