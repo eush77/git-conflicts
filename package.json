@@ -1,7 +1,7 @@
 {
   "name": "git-conflicts",
   "version": "0.0.0",
-  "description": "Manual merge resolution tool",
+  "description": "Manual merge tool",
   "author": "Eugene Sharygin <eush77@gmail.com>",
   "license": "MIT",
   "preferGlobal": true,
@@ -26,6 +26,8 @@
   "keywords": [
     "git",
     "merge",
+    "tool",
+    "mergetool",
     "rebase",
     "marker",
     "conflict",

@@ -4,10 +4,28 @@
 
 [![Dependency Status][david-badge]][david]
 
-Resolve git merge conflicts in the editor.
+Resolve merge conflicts in the editor. With `conflicts`, you do all the work yourself.
 
 [david]: https://david-dm.org/eush77/git-conflicts
 [david-badge]: https://david-dm.org/eush77/git-conflicts.png
+
+## Usage
+
+```
+git conflicts
+```
+
+Opens each conflict in the editor. You resolve the conflict, save and exit, and go to the next one.
+
+```
+git conflicts [file]...
+```
+
+Run `conflicts` on specified files.
+
+## Configuration
+
+- `$EDITOR` — set this variable to override the default editor.
 
 ## Install
 
