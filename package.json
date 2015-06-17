@@ -8,9 +8,6 @@
   "bin": {
     "git-conflicts": "cli.js"
   },
-  "scripts": {
-    "test": "tape test/*.js"
-  },
   "files": [
     "cli.js"
   ],
@@ -39,7 +36,5 @@
     "string-editor": "^0.1.2",
     "string-replace": "^0.2.0"
   },
-  "devDependencies": {
-    "tape": "^4.0.0"
-  }
+  "devDependencies": {}
 }
