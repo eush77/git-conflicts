@@ -12,8 +12,7 @@
     "test": "tape test/*.js"
   },
   "files": [
-    "cli.js",
-    "lib/"
+    "cli.js"
   ],
   "homepage": "https://github.com/eush77/git-conflicts",
   "repository": {
@@ -37,7 +36,8 @@
   "dependencies": {
     "byline": "^4.2.1",
     "help-version": "^0.2.0",
-    "string-editor": "^0.1.2"
+    "string-editor": "^0.1.2",
+    "string-replace": "^0.2.0"
   },
   "devDependencies": {
     "tape": "^4.0.0"

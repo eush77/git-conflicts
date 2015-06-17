@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 'use strict';
 
-var stringReplace = require('./lib/string-replace');
-
 var help = require('help-version')(usage()).help,
     edit = require('string-editor'),
-    byline = require('byline');
+    byline = require('byline'),
+    stringReplace = require('string-replace');
 
 var fs = require('fs'),
     spawn = require('child_process').spawn;
@@ -27,16 +26,14 @@ var conflictRegExp = /^<<<<<<< (.|\n)*?=======(.|\n)*?>>>>>>> .*$/gm;
 var resolveConflicts = function (filename, cb) {
   var diff = fs.readFileSync(filename, { encoding: 'utf8' });
 
-  stringReplace(diff, conflictRegExp, replace, function (result) {
+  stringReplace(diff, conflictRegExp, replace, function (err, result) {
+    if (err) return cb(err);
     fs.writeFileSync(filename, result);
     cb();
   });
 
   function replace(cb, conflict) {
-    edit(conflict, function (err, result) {
-      if (err) throw err;
-      cb(result);
-    });
+    edit(conflict, cb);
   }
 };
 
@@ -46,7 +43,8 @@ var enqueue = (function () {
 
   var check = function () {
     if (queue.length) {
-      resolveConflicts(queue[0], function () {
+      resolveConflicts(queue[0], function (err) {
+        if (err) throw err;
         queue.shift();
         check();
       });
