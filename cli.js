@@ -20,7 +20,20 @@ function usage() {
 }
 
 
-var conflictRegExp = /^<<<<<<< (.|\n)*?=======(.|\n)*?>>>>>>> .*$/gm;
+var conflictRegExp = /^<<<<<<< (.|\n)*?=======(.|\n)*?>>>>>>> .*$/gm,
+    conflictStartRegExp = /^<<<<<<</,
+    conflictEndRegExp = /^>>>>>>>/;
+
+
+var extractResolutionBody = function (result, cb) {
+  var lines = result.trim().split('\n');
+  if (lines.length < 2 ||
+      !conflictStartRegExp.test(lines[0]) ||
+      !conflictEndRegExp.test(lines[lines.length - 1])) {
+    return cb(Error('Could not parse resolution result. Header and footer lines not found.'));
+  }
+  cb(null, lines.slice(1, -1).join('\n'));
+};
 
 
 var resolveConflicts = function (filename, cb) {
@@ -33,7 +46,10 @@ var resolveConflicts = function (filename, cb) {
   });
 
   function replace(cb, conflict) {
-    edit(conflict, cb);
+    edit(conflict, function (err, result) {
+      if (err) return cb(err);
+      extractResolutionBody(result, cb);
+    });
   }
 };
 
