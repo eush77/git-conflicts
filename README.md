@@ -2,10 +2,13 @@
 
 # git-conflicts
 
+[![Build Status][travis-badge]][travis]
 [![Dependency Status][david-badge]][david]
 
 Resolve merge conflicts in the editor. With `conflicts`, you do all the work yourself.
 
+[travis]: https://travis-ci.org/eush77/git-conflicts
+[travis-badge]: https://travis-ci.org/eush77/git-conflicts.svg?branch=master
 [david]: https://david-dm.org/eush77/git-conflicts
 [david-badge]: https://david-dm.org/eush77/git-conflicts.png
 
