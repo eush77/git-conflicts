@@ -14,14 +14,14 @@ test('resolution', function (t) {
   var next = afterAll(t.end.bind(t, null));
 
   testCases('resolutions', function (files, message) {
-    resolution.extract(files.diff, next(function (err, resolved) {
+    resolution(files.diff, next(function (err, resolved) {
       t.error(err);
       t.equal(resolved, files.out, message);
     }));
   });
 
   testCases('non-resolutions', function (files, message) {
-    resolution.extract(files.diff, next(function (err) {
+    resolution(files.diff, next(function (err) {
       t.true(err, message);
     }));
   });

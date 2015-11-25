@@ -37,7 +37,7 @@ var resolveConflicts = function (filename, cb) {
   function replace(cb, conflict) {
     edit(conflict, function (err, result) {
       if (err) return cb(err);
-      resolution.extract(result, cb);
+      resolution(result, cb);
     });
   }
 };
