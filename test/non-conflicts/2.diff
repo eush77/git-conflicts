@@ -1,0 +1,5 @@
+<< 4
+shifts a number 4 bits to the left and its inverse is
+/ 16
+==
+>> 4

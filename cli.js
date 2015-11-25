@@ -7,7 +7,8 @@ var conflictRegExp = require('./lib/conflict'),
 var help = require('help-version')(usage()).help,
     edit = require('string-editor'),
     byline = require('byline'),
-    stringReplace = require('string-replace');
+    stringReplace = require('string-replace'),
+    cloneRegExp = require('clone-regexp');
 
 var fs = require('fs'),
     spawn = require('child_process').spawn;
@@ -25,7 +26,8 @@ function usage() {
 
 var resolveConflicts = function (filename, cb) {
   var diff = fs.readFileSync(filename, { encoding: 'utf8' });
-
+  var conflictRegExp = cloneRegExp(conflict,
+                                   { global: true, multiline: true });
   stringReplace(diff, conflictRegExp, replace, function (err, result) {
     if (err) return cb(err);
     fs.writeFileSync(filename, result);
