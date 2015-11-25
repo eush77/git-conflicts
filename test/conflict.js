@@ -44,13 +44,13 @@ test('conflict markers', function (t) {
 });
 
 
-test('conflict', function (t) {
+test('conflicts', function (t) {
   testDir('conflicts', true);
   testDir('non-conflicts', false);
   t.end();
 
   function testDir (directory, verdict) {
-    directory = path.resolve(__dirname, directory);
+    directory = path.resolve(__dirname, 'data', directory);
     fs.readdirSync(directory).forEach(function (basename) {
       var testPath = path.relative(process.cwd(), path.join(directory, basename));
       var testCase = fs.readFileSync(testPath, 'utf8').replace(/\n$/, '');
