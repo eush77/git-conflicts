@@ -45,16 +45,28 @@ test('conflict markers', function (t) {
 
 
 test('conflicts', function (t) {
+  var testDir = makeDirTester(t, conflict);
   testDir('conflicts', true);
   testDir('non-conflicts', false);
   t.end();
+});
 
-  function testDir (directory, verdict) {
+
+test('resolutions', function (t) {
+  var testDir = makeDirTester(t, conflict.resolution);
+  testDir('resolutions', true);
+  testDir('non-resolutions', false);
+  t.end();
+});
+
+
+function makeDirTester (t, regexp) {
+  return function testDir (directory, verdict) {
     directory = path.resolve(__dirname, 'data', directory);
     fs.readdirSync(directory).forEach(function (basename) {
       var testPath = path.relative(process.cwd(), path.join(directory, basename));
       var testCase = fs.readFileSync(testPath, 'utf8').replace(/\n$/, '');
-      t.equal(conflict.test(testCase), verdict, testPath);
+      t.equal(regexp.test(testCase), verdict, testPath);
     });
-  }
-});
+  };
+}
