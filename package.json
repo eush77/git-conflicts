@@ -37,7 +37,7 @@
   "dependencies": {
     "byline": "^4.2.1",
     "clone-regexp": "^1.0.0",
-    "help-version": "^0.2.0",
+    "help-version": "^1.0.0",
     "string-editor": "^0.1.2",
     "string-replace": "^0.2.0"
   },
