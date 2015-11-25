@@ -1,0 +1,21 @@
+# Comments are meant to be used by us, to embed some help on how
+# to use the tool in the tool's control document. At the moment of
+# writing, we just dump one conflict after another and shell out
+# to user's editor, and the user is expected to know what he or she
+# is expected to do.
+
+# We could devise some special syntax just for that, such as YAML
+# frontmatter or some other type of header, but it is better and
+# simpler to design a general purpose mechanism instead.
+# Orthogonality law, applied.
+
+# This also follows the Rule of Least Surprise, because Git and other
+# tools do something like that, too.
+
+<<<<<<< 2b0b56a7b74d4f5a0a7ef042c34eb27981ab9859
+Resolved.
+# This is not a comment, but rather part of the diff.
+# Host languages have comments, too!
+>>>>>>> Refactor
+
+# Nice!

@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "after-all": "^2.0.2",
+    "group-by": "0.0.1",
     "tape": "^4.2.2"
   }
 }

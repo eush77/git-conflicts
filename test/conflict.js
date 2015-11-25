@@ -62,7 +62,7 @@ test('resolutions', function (t) {
 
 function makeDirTester (t, regexp) {
   return function testDir (directory, verdict) {
-    directory = path.resolve(__dirname, 'data', directory);
+    directory = path.resolve(__dirname, 'data/conflict', directory);
     fs.readdirSync(directory).forEach(function (basename) {
       var testPath = path.relative(process.cwd(), path.join(directory, basename));
       var testCase = fs.readFileSync(testPath, 'utf8').replace(/\n$/, '');
