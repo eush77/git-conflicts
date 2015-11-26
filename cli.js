@@ -24,48 +24,9 @@ function usage() {
 }
 
 
-var resolveConflicts = function (filename, cb) {
-  var diff = fs.readFileSync(filename, { encoding: 'utf8' });
-  var conflictRegExp = cloneRegExp(conflict,
-                                   { global: true, multiline: true });
-  stringReplace(diff, conflictRegExp, replace, function (err, result) {
-    if (err) return cb(err);
-    fs.writeFileSync(filename, result);
-    cb();
-  });
+(function main (argv) {
+  var enqueue = newQueue();
 
-  function replace(cb, conflict) {
-    edit(conflict, function (err, result) {
-      if (err) return cb(err);
-      resolution(result, cb);
-    });
-  }
-};
-
-
-var enqueue = (function () {
-  var queue = [];
-
-  var check = function () {
-    if (queue.length) {
-      resolveConflicts(queue[0], function (err) {
-        if (err) throw err;
-        queue.shift();
-        check();
-      });
-    }
-  };
-
-  return function (entry) {
-    queue.push(entry);
-    if (queue.length == 1) {
-      check();
-    }
-  };
-}());
-
-
-(function (argv) {
   if (argv.length) {
     argv.forEach(enqueue);
   }
@@ -95,3 +56,44 @@ var enqueue = (function () {
     });
   }
 }(process.argv.slice(2)));
+
+
+function newQueue () {
+  var queue = [];
+
+  var check = function () {
+    if (queue.length) {
+      resolveConflicts(queue[0], function (err) {
+        if (err) throw err;
+        queue.shift();
+        check();
+      });
+    }
+  };
+
+  return function (entry) {
+    queue.push(entry);
+    if (queue.length == 1) {
+      check();
+    }
+  };
+}
+
+
+function resolveConflicts (filename, cb) {
+  var diff = fs.readFileSync(filename, { encoding: 'utf8' });
+  var conflictsRegExp = cloneRegExp(conflictRegExp,
+                                    { global: true, multiline: true });
+  stringReplace(diff, conflictsRegExp, replace, function (err, result) {
+    if (err) return cb(err);
+    fs.writeFileSync(filename, result);
+    cb();
+  });
+
+  function replace(cb, conflict) {
+    edit(conflict, function (err, result) {
+      if (err) return cb(err);
+      resolution(result, cb);
+    });
+  }
+}
