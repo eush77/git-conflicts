@@ -40,7 +40,7 @@ Resolved conflict.
 
 Note that `conflicts` assumes you leave header and footer lines and put resolved lines in between.
 
-You can abort conflict resolution process at any time by exiting with non-zero return code from the editor (editors not capable of that are not worth using).
+You can abort conflict resolution process by exiting with non-zero code from the editor or by leaving the document blank (or by just removing the conflict markers).
 
 ```
 git conflicts [file]...
