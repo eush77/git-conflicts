@@ -90,10 +90,22 @@ function resolveConflicts (filename, cb) {
     cb();
   });
 
-  function replace(cb, conflict) {
-    edit(conflict, function (err, result) {
+  function replace (cb, conflict) {
+    edit(prepareConflictForEditing(conflict), function (err, result) {
       if (err) return cb(err);
       resolution(result, cb);
     });
   }
+}
+
+
+function prepareConflictForEditing (conflict) {
+  return conflict + [
+    '\n\n',
+    '# Resolve the conflict by changing lines between conflict markers\n',
+    '# (`<<<<<<<` and `>>>>>>>`) to the final unified version.\n',
+    '#\n',
+    '# Empty lines and lines starting with \'#\' will be ignored, unless\n',
+    '# they are between conflict markers.\n'
+  ].join('');
 }
