@@ -91,7 +91,8 @@ function resolveConflicts (filename, cb) {
   });
 
   function replace (cb, conflict) {
-    edit(prepareConflictForEditing(conflict), function (err, result) {
+    var tempFileName = Date.now() + '.diff';
+    edit(prepareConflictForEditing(conflict), tempFileName, function (err, result) {
       if (err) return cb(err);
       resolution(result, cb);
     });
