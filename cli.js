@@ -82,13 +82,22 @@ function newQueue () {
 
 function resolveConflicts (filename, cb) {
   var diff = fs.readFileSync(filename, { encoding: 'utf8' });
-  var conflictsRegExp = cloneRegExp(conflictRegExp,
-                                    { global: true, multiline: true });
-  stringReplace(diff, conflictsRegExp, replace, function (err, result) {
-    if (err) return cb(err);
-    fs.writeFileSync(filename, result);
-    cb();
-  });
+  var conflictsRegExp = cloneRegExp(conflictRegExp, { multiline: true });
+  var numberOfConflicts = diff.match(cloneRegExp(conflictsRegExp,
+                                                 { global: true })).length;
+
+  (function resolve (diff) {
+    stringReplace(diff, conflictsRegExp, replace, function (err, merged) {
+      if (err) return cb(err);
+
+      fs.writeFileSync(filename, merged);
+      if (--numberOfConflicts) {
+        return resolve(merged);
+      }
+
+      cb();
+    });
+  }(diff));
 
   function replace (cb, conflict) {
     var tempFileName = Date.now() + '.diff';
