@@ -58,6 +58,8 @@ function usage() {
 }(process.argv.slice(2)));
 
 
+// Create new queue for conflicted filenames.
+// Calls `resolveConflicts` in sequence on these files.
 function newQueue () {
   var queue = [];
 
@@ -80,6 +82,7 @@ function newQueue () {
 }
 
 
+// Read the file and resolve the conflicts one by one.
 function resolveConflicts (filename, cb) {
   var diff = fs.readFileSync(filename, { encoding: 'utf8' });
   var conflictsRegExp = cloneRegExp(conflictRegExp, { multiline: true });
@@ -109,6 +112,7 @@ function resolveConflicts (filename, cb) {
 }
 
 
+// Add some comments explaining to user how to proceed with the conflict.
 function prepareConflictForEditing (conflict) {
   return conflict + [
     '\n\n',
