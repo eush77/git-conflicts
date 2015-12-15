@@ -92,8 +92,12 @@ function resolveConflicts (filename, cb) {
     var match = diff.match(regexp);
     if (!match) return cb();
 
-    resolveOne(match[0], function (err, result) {
+    resolveOne(match[0], function (err, result, retry) {
       if (err) return cb(err);
+
+      if (retry) {
+        return resolve(diff, merged);
+      }
 
       merged += diff.slice(0, match.index) + result;
       diff = diff.slice(match.index + match[0].length);
@@ -139,11 +143,15 @@ function onResolutionError (filename, conflict, err, cb) {
     name: 'answer',
     message: 'Resolution on `' + filename + '` does not apply',
     choices: [
+      { name: 'retry', key: 'r' },
       { name: 'skip', key: 's' },
       { name: 'quit', key: 'q' }
     ]
   }, function (a) {
     switch (a.answer) {
+      case 'retry':
+        return cb(null, conflict, true);
+
       case 'skip':
         return cb(null, conflict);
 
