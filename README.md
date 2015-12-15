@@ -40,7 +40,7 @@ Resolved conflict.
 
 Note that `conflicts` assumes you leave header and footer lines and put resolved lines in between.
 
-You can abort conflict resolution process by exiting with non-zero code from the editor or by leaving the document blank (or by just removing the conflict markers).
+To skip a conflict, exit without resolution and select `skip` in the prompt.
 
 ```
 git conflicts [file]...
