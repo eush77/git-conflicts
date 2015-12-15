@@ -2,13 +2,14 @@
 'use strict';
 
 var conflictRegExp = require('./lib/conflict'),
-    resolution = require('./lib/resolution');
+    resolution = require('./lib/resolution'),
+    ResolutionError = require('./lib/resolution-error');
 
 var help = require('help-version')(usage()).help,
     edit = require('string-editor'),
     byline = require('byline'),
-    stringReplace = require('string-replace'),
-    cloneRegExp = require('clone-regexp');
+    cloneRegExp = require('clone-regexp'),
+    prompt = require('inquirer').prompt;
 
 var fs = require('fs'),
     spawn = require('child_process').spawn;
@@ -85,29 +86,35 @@ function newQueue () {
 // Read the file and resolve the conflicts one by one.
 function resolveConflicts (filename, cb) {
   var diff = fs.readFileSync(filename, { encoding: 'utf8' });
-  var conflictsRegExp = cloneRegExp(conflictRegExp, { multiline: true });
-  var numberOfConflicts = diff.match(cloneRegExp(conflictsRegExp,
-                                                 { global: true })).length;
+  var regexp = cloneRegExp(conflictRegExp, { multiline: true });
 
-  (function resolve (diff) {
-    stringReplace(diff, conflictsRegExp, replace, function (err, merged) {
+  (function resolve (diff, merged) {
+    var match = diff.match(regexp);
+    if (!match) return cb();
+
+    resolveOne(match[0], function (err, result) {
       if (err) return cb(err);
 
-      fs.writeFileSync(filename, merged);
-      if (--numberOfConflicts) {
-        return resolve(merged);
-      }
+      merged += diff.slice(0, match.index) + result;
+      diff = diff.slice(match.index + match[0].length);
 
-      cb();
+      fs.writeFileSync(filename, merged + diff);
+      resolve(diff, merged);
     });
-  }(diff));
+  }(diff, ''));
 
-  function replace (cb, conflict) {
+  function resolveOne (conflict, cb) {
     var tempFileName = Date.now() + '.diff';
-    edit(prepareConflictForEditing(conflict), tempFileName, function (err, result) {
-      if (err) return cb(err);
-      resolution(result, cb);
-    });
+    edit(prepareConflictForEditing(conflict), tempFileName,
+         function (err, result) {
+           if (err) return cb(err);
+
+           resolution(result, function (err, result) {
+             return (err instanceof ResolutionError)
+               ? onResolutionError(filename, conflict, err, cb)
+               : cb(err, result);
+           });
+         });
   }
 }
 
@@ -122,4 +129,28 @@ function prepareConflictForEditing (conflict) {
     '# Empty lines and lines starting with \'#\' will be ignored, unless\n',
     '# they are between conflict markers.\n'
   ].join('');
+}
+
+
+// Ask the user whether we should skip the conflict or abort.
+function onResolutionError (filename, conflict, err, cb) {
+  prompt({
+    type: 'expand',
+    name: 'answer',
+    message: 'Resolution on `' + filename + '` does not apply',
+    choices: [
+      { name: 'skip', key: 's' },
+      { name: 'quit', key: 'q' }
+    ]
+  }, function (a) {
+    switch (a.answer) {
+      case 'skip':
+        return cb(null, conflict);
+
+      case 'quit':
+        return cb(err);
+
+      default: throw Error('unreachable');
+    }
+  });
 }
