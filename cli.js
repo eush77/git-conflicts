@@ -10,7 +10,8 @@ var help = require('help-version')(usage()).help,
     byline = require('byline'),
     cloneRegExp = require('clone-regexp'),
     prompt = require('inquirer').prompt,
-    chalk = require('chalk');
+    chalk = require('chalk'),
+    debug = require('debug')('git-conflicts');
 
 var fs = require('fs'),
     spawn = require('child_process').spawn;
@@ -62,6 +63,10 @@ function usage() {
 
 // Handle error.
 function error (err) {
+  if (debug.enabled) {
+    throw err;
+  }
+
   console.error(chalk.red(err.name) + ': ' + err.message);
   process.exit(1);
 }
