@@ -9,7 +9,8 @@ var help = require('help-version')(usage()).help,
     edit = require('string-editor'),
     byline = require('byline'),
     cloneRegExp = require('clone-regexp'),
-    prompt = require('inquirer').prompt;
+    prompt = require('inquirer').prompt,
+    chalk = require('chalk');
 
 var fs = require('fs'),
     spawn = require('child_process').spawn;
@@ -52,11 +53,18 @@ function usage() {
 
     git.on('exit', function (code, signal) {
       if (code !== 0) {
-        throw Error('git terminated with error');
+        error(Error('Git terminated abruptly'));
       }
     });
   }
 }(process.argv.slice(2)));
+
+
+// Handle error.
+function error (err) {
+  console.error(chalk.red(err.name) + ': ' + err.message);
+  process.exit(1);
+}
 
 
 // Create new queue for conflicted filenames.
@@ -67,7 +75,7 @@ function newQueue () {
   var check = function () {
     if (queue.length) {
       resolveConflicts(queue[0], function (err) {
-        if (err) throw err;
+        if (err) return error(err);
         queue.shift();
         check();
       });
