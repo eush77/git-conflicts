@@ -171,7 +171,7 @@ function onResolutionError (filename, conflict, err, cb) {
         return cb(null, conflict);
 
       case 'quit':
-        return cb(err);
+        return process.exit();
 
       default: throw Error('unreachable');
     }
