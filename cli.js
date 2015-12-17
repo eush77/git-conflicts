@@ -109,7 +109,7 @@ function resolveConflicts (filename, cb) {
 
   function resolveOne (conflict, cb) {
     var tempFileName = Date.now() + '.diff';
-    edit(prepareConflictForEditing(conflict), tempFileName,
+    edit(prepareConflictForEditing(filename, conflict), tempFileName,
          function (err, result) {
            if (err) return cb(err);
 
@@ -124,10 +124,12 @@ function resolveConflicts (filename, cb) {
 
 
 // Add some comments explaining to user how to proceed with the conflict.
-function prepareConflictForEditing (conflict) {
+function prepareConflictForEditing (filename, conflict) {
   return conflict + [
     '\n\n',
-    '# Resolve the conflict by changing lines between conflict markers\n',
+    '# Conflict in `' + filename + '`.\n',
+    '#\n',
+    '# Resolve this conflict by changing lines between conflict markers\n',
     '# (`<<<<<<<` and `>>>>>>>`) to the final unified version.\n',
     '#\n',
     '# Empty lines and lines starting with \'#\' will be ignored, unless\n',
