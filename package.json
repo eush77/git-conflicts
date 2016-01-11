@@ -9,7 +9,7 @@
     "git-conflicts": "cli.js"
   },
   "scripts": {
-    "test": "tape test/*.js"
+    "test": "nyc --reporter=text --reporter=html tape test/*.js"
   },
   "files": [
     "cli.js",
@@ -48,6 +48,7 @@
   "devDependencies": {
     "after-all": "^2.0.2",
     "group-by": "0.0.1",
+    "nyc": "^5.3.0",
     "tape": "^4.2.2"
   }
 }
