@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
-var resolveFile = require('./lib/resolve-file');
+var resolveFile = require('./lib/resolve-file'),
+    basename = require('./lib/basename');
 
 var help = require('help-version')(usage()).help,
     byline = require('byline'),
@@ -10,7 +11,6 @@ var help = require('help-version')(usage()).help,
     chalk = require('chalk'),
     debug = require('debug')('git-conflicts'),
     edit = require('string-editor'),
-    hat = require('hat'),
     prompt = require('inquirer').prompt;
 
 var spawn = require('child_process').spawn;
@@ -40,9 +40,9 @@ function error (err) {
 (function main (argv) {
   // Set up resolution callbacks.
   resolveFile = resolveFile.bind(null, {
-    resolve: function (filename, conflict, cb) {
-      edit(prepareConflictForEditing(filename, conflict),
-           hat() + '.diff', cb);
+    resolve: function (position, conflict, cb) {
+      edit(prepareConflictForEditing(position.filename, conflict),
+           basename(position.filename, position.conflictNumber), cb);
     },
     onResolutionError: onResolutionError
   });

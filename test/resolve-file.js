@@ -1,10 +1,10 @@
 'use strict';
 
 var resolveFile = require('../lib/resolve-file'),
-    ResolutionError = require('../lib/resolution-error');
+    ResolutionError = require('../lib/resolution-error'),
+    basename = require('../lib/basename');
 
-var test = require('tape'),
-    hat = require('hat');
+var test = require('tape');
 
 var fs = require('fs'),
     path = require('path'),
@@ -184,5 +184,5 @@ function read (name) {
 
 
 function tempPath () {
-  return path.join(os.tmpdir(), hat() + '.diff');
+  return path.join(os.tmpdir(), basename());
 }

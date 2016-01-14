@@ -40,7 +40,6 @@
     "chalk": "^1.1.1",
     "clone-regexp": "^1.0.0",
     "debug": "^2.2.0",
-    "hat": "0.0.3",
     "help-version": "^1.0.0",
     "impartial": "0.0.1",
     "inquirer": "^0.11.0",
