@@ -10,7 +10,7 @@ var help = require('help-version')(usage()).help,
     chalk = require('chalk'),
     debug = require('debug')('git-conflicts'),
     edit = require('string-editor'),
-    tempPath = require('gettemporaryfilepath'),
+    hat = require('hat'),
     prompt = require('inquirer').prompt;
 
 var spawn = require('child_process').spawn;
@@ -42,7 +42,7 @@ function error (err) {
   resolveFile = resolveFile.bind(null, {
     resolve: function (filename, conflict, cb) {
       edit(prepareConflictForEditing(filename, conflict),
-           tempPath({ suffix: '.diff' }), cb);
+           hat() + '.diff', cb);
     },
     onResolutionError: onResolutionError
   });

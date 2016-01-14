@@ -4,10 +4,11 @@ var resolveFile = require('../lib/resolve-file'),
     ResolutionError = require('../lib/resolution-error');
 
 var test = require('tape'),
-    tempPath = require('gettemporaryfilepath');
+    hat = require('hat');
 
 var fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    os = require('os');
 
 
 test('resolve-file', function (t) {
@@ -19,7 +20,7 @@ test('resolve-file', function (t) {
   ];
   var lastDiff = read(4);
 
-  var workingFile = tempPath({ suffix: '.diff' });
+  var workingFile = tempPath();
   fs.writeFileSync(workingFile, firstDiff);
 
   var resolutionInfo = {
@@ -58,7 +59,7 @@ test('resolve-file interactive', function (t) {
 
   var lastConflict;
   var error;
-  var workingFile = tempPath({ suffix: '.diff' });
+  var workingFile = tempPath();
   fs.writeFileSync(workingFile, firstDiff);
 
   var resolutionInfo = {
@@ -124,7 +125,7 @@ test('resolve-file error', function (t) {
   var lastDiff = read(2);
 
   var error;
-  var workingFile = tempPath({ suffix: '.diff' });
+  var workingFile = tempPath();
   fs.writeFileSync(workingFile, firstDiff);
 
   var resolutionInfo = {
@@ -172,4 +173,9 @@ function readConflict (name) {
 function read (name) {
   var filepath = path.resolve(__dirname, 'data/resolve-file', name + '.diff');
   return fs.readFileSync(filepath, 'utf8');
+}
+
+
+function tempPath () {
+  return path.join(os.tmpdir(), hat() + '.diff');
 }
