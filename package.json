@@ -44,7 +44,8 @@
     "impartial": "0.0.1",
     "inquirer": "^0.11.0",
     "push-queue": "^0.1.1",
-    "string-editor": "^0.1.2"
+    "string-editor": "^0.1.2",
+    "to-slug-case": "^0.1.2"
   },
   "devDependencies": {
     "after-all": "^2.0.2",

@@ -15,8 +15,8 @@ test('basename', function (t) {
 
   check(/^[0-9a-z]+\.diff$/);
   check('filename', /^[0-9a-z]+-filename\.diff$/);
-  check('file-name.js', /^[0-9a-z]+-file-name-js\.diff$/);
-  check('file-name.min.js', /^[0-9a-z]+-file-name-min-js\.diff$/);
+  check('File_Name__test (1).min.js',
+        /^[0-9a-z]+-file-name-test-1-min-js\.diff$/);
   check('filename.js', 1, /^[0-9a-z]+-filename-js-1\.diff$/);
   t.end();
 });
