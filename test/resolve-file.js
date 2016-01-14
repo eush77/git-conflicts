@@ -20,19 +20,21 @@ test('resolve-file', function (t) {
   ];
   var lastDiff = read(4);
 
+  var conflictNumber = 0;
   var workingFile = tempPath();
   fs.writeFileSync(workingFile, firstDiff);
 
   var resolutionInfo = {
-    resolve: function (filename, conflict, cb) {
-      var c = conflicts.shift();
+    resolve: function (position, conflict, cb) {
+      var c = conflicts[conflictNumber++];
       t.true(c);
 
-      t.equal(filename, workingFile, 'filename');
+      t.equal(position.filename, workingFile, 'filename');
+      t.equal(position.conflictNumber, conflictNumber, 'conflictNumber');
       t.equal(conflict, c.conflict, 'conflict');
       cb(null, c.resolution);
     },
-    onResolutionError: function (filename, conflict, err, cb) {
+    onResolutionError: function (position, conflict, err, cb) {
       t.fail(err.message);
     }
   };
@@ -59,19 +61,20 @@ test('resolve-file interactive', function (t) {
 
   var lastConflict;
   var error;
+  var conflictNumber = 0;
   var workingFile = tempPath();
   fs.writeFileSync(workingFile, firstDiff);
 
   var resolutionInfo = {
-    resolve: function (filename, conflict, cb) {
-      var c = conflicts[0];
+    resolve: function (position, conflict, cb) {
+      var c = conflicts[conflictNumber++];
 
       t.true(c);
-      t.equal(filename, workingFile, 'resolve - filename');
+      t.equal(position.filename, workingFile, 'resolve - filename');
+      t.equal(position.conflictNumber, conflictNumber, 'resolve - conflictNumber');
       t.equal(conflict, c.conflict, 'resolve - conflict');
 
-      if (conflicts.length > 1) {
-        conflicts.shift();
+      if (conflictNumber < conflicts.length) {
         cb(null, c.resolution);
       }
       else if (!lastConflict) {
@@ -81,13 +84,14 @@ test('resolve-file interactive', function (t) {
       }
       else {
         // Last conflict - trigger ResolutionError (retry).
-        conflicts.shift();
-        t.ok(!conflicts.length, 'no more conflicts');
+        t.equal(conflictNumber, conflicts.length, 'no more conflicts');
         cb(null, conflict);
       }
     },
-    onResolutionError: function (filename, conflict, err, cb) {
-      t.equal(filename, workingFile, 'onResolutionError - filename');
+    onResolutionError: function (position, conflict, err, cb) {
+      t.equal(position.filename, workingFile, 'onResolutionError - filename');
+      t.equal(position.conflictNumber, conflictNumber--,
+              'onResolutionError - conflictNumber');
       t.equal(conflict, lastConflict, 'onResolutionError - conflict');
       t.ok(err instanceof ResolutionError, 'onResolutionError - err');
 
@@ -125,18 +129,21 @@ test('resolve-file error', function (t) {
   var lastDiff = read(2);
 
   var error;
+  var conflictNumber = 0;
   var workingFile = tempPath();
   fs.writeFileSync(workingFile, firstDiff);
 
   var resolutionInfo = {
-    resolve: function (filename, conflict, cb) {
-      var c = conflicts.shift();
+    resolve: function (position, conflict, cb) {
+      var c = conflicts[conflictNumber++];
 
       t.true(c);
-      t.equal(filename, workingFile, 'resolve - filename');
+      t.equal(position.filename, workingFile, 'resolve - filename');
+      t.equal(position.conflictNumber, conflictNumber,
+              'resolve - conflictNumber');
       t.equal(conflict, c.conflict, 'resolve - conflict');
 
-      if (conflicts.length) {
+      if (conflictNumber < conflicts.length) {
         cb(null, c.resolution);
       }
       else {
@@ -144,7 +151,7 @@ test('resolve-file error', function (t) {
         cb(error = Error());
       }
     },
-    onResolutionError: function (filename, conflict, err, cb) {
+    onResolutionError: function (position, conflict, err, cb) {
       t.fail(err.message);
     }
   };
