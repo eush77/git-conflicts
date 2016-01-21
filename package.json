@@ -1,6 +1,6 @@
 {
   "name": "git-conflicts",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Manual merge tool",
   "author": "Eugene Sharygin <eush77@gmail.com>",
   "license": "MIT",
