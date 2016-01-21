@@ -18,5 +18,6 @@ test('basename', function (t) {
   check('File_Name__test (1).min.js',
         /^[0-9a-z]+-file-name-test-1-min-js\.diff$/);
   check('filename.js', 1, /^[0-9a-z]+-filename-js-1\.diff$/);
+  check('-RAnDom -jUNk$__loL!', 1, /^[0-9a-z]+-random-junk-lol-1\.diff$/);
   t.end();
 });
