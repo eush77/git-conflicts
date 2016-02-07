@@ -104,11 +104,11 @@ function prepareConflictForEditing (filename, conflict) {
 
 
 // Ask the user whether we should skip the conflict or abort.
-function onResolutionError (filename, conflict, err, cb) {
+function onResolutionError (position, conflict, err, cb) {
   prompt({
     type: 'expand',
     name: 'answer',
-    message: 'Resolution on `' + filename + '` does not apply',
+    message: 'Resolution on `' + position.filename + '` does not apply',
     choices: [
       { name: 'retry', key: 'r' },
       { name: 'skip', key: 's' },
