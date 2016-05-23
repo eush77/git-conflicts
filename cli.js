@@ -41,8 +41,10 @@ function error (err) {
   // Set up resolution callbacks.
   resolveFile = resolveFile.bind(null, {
     resolve: function (position, conflict, cb) {
-      edit(prepareConflictForEditing(position.filename, conflict),
-           basename(position.filename, position.conflictNumber), cb);
+        edit(prepareConflictForEditing(position.filename, conflict), {
+          filename: basename(position.filename, position.conflictNumber),
+          editor: process.env.GIT_EDITOR
+        }, cb);
     },
     onResolutionError: onResolutionError
   });

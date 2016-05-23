@@ -54,6 +54,7 @@ Run `conflicts` on specified files.
 ## Configuration
 
 - `$EDITOR` — set this variable to override the default editor.
+- `$GIT_EDITOR` — set this variable to override `$EDITOR`.
 
 ## Install
 
