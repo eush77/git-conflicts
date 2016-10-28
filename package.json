@@ -36,13 +36,13 @@
     "editor"
   ],
   "dependencies": {
-    "byline": "^4.2.1",
+    "byline": "^5.0.0",
     "chalk": "^1.1.1",
     "clone-regexp": "^1.0.0",
     "debug": "^2.2.0",
     "help-version": "^1.0.0",
     "impartial": "0.0.1",
-    "inquirer": "^0.11.0",
+    "inquirer": "^1.2.2",
     "push-queue": "^0.1.1",
     "string-editor": "github:eush77/string-editor#set-editor",
     "to-slug-case": "^1.0.0",
@@ -52,7 +52,7 @@
     "after-all": "^2.0.2",
     "coveralls": "^2.11.6",
     "group-by": "0.0.1",
-    "nyc": "^5.3.0",
+    "nyc": "^8.3.2",
     "tape": "^4.2.2"
   }
 }
