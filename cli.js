@@ -2,11 +2,11 @@
 'use strict';
 
 var basename = require('./lib/basename'),
+    debug = require('./lib/debug'),
     resolveFile = require('./lib/resolve-file');
 
 var byline = require('byline'),
     chalk = require('chalk'),
-    debug = require('debug')('git-conflicts'),
     edit = require('string-editor'),
     help = require('help-version')(usage()).help,
     prompt = require('inquirer').prompt,
