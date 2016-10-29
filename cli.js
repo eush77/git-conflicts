@@ -3,17 +3,15 @@
 
 var basename = require('./lib/basename'),
     debug = require('./lib/debug'),
+    gitUnmergedFiles = require('./lib/git-unmerged-files'),
     resolveFile = require('./lib/resolve-file');
 
-var byline = require('byline'),
-    chalk = require('chalk'),
+var chalk = require('chalk'),
     edit = require('string-editor'),
     help = require('help-version')(usage()).help,
     prompt = require('inquirer').prompt,
     Queue = require('push-queue'),
     sliceArgs = require('impartial');
-
-var spawn = require('child_process').spawn;
 
 
 function usage() {
@@ -62,30 +60,11 @@ function error (err) {
     argv.forEach(sliceArgs(enqueue, 0, 1));
   }
   else {
-    // Get list of files from Git.
-    var git = spawn('git', ['ls-files', '--unmerged'], {
-      stdio: ['ignore', 'pipe', process.stderr]
-    });
-
-    var resolved = Object.create(null);
-
-    git.stdout
-      .pipe(byline())
-      .on('data', function (line) {
-        var filename = line.toString().split(/\s+/)[3];
-        if (resolved[filename]) {
-          return;
-        }
-
-        resolved[filename] = true;
-        enqueue(filename);
-      });
-
-    git.on('exit', function (code, signal) {
-      if (code !== 0) {
-        error(Error('Git terminated abruptly'));
-      }
-    });
+    gitUnmergedFiles()
+      .on('data', function (filename) {
+        enqueue(filename.toString());
+      })
+      .on('error', error);
   }
 }(process.argv.slice(2)));
 
