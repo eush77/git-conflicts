@@ -116,7 +116,7 @@ function onResolutionError (position, conflict, err, cb) {
       { name: 'skip', key: 's' },
       { name: 'quit', key: 'q' }
     ]
-  }, function (a) {
+  }).then(function (a) {
     switch (a.answer) {
       case 'retry':
         return cb(null, conflict, true);
