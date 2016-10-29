@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 'use strict';
 
-var resolveFile = require('./lib/resolve-file'),
-    basename = require('./lib/basename');
+var basename = require('./lib/basename'),
+    resolveFile = require('./lib/resolve-file');
 
-var help = require('help-version')(usage()).help,
-    byline = require('byline'),
-    Queue = require('push-queue'),
-    sliceArgs = require('impartial'),
+var byline = require('byline'),
     chalk = require('chalk'),
     debug = require('debug')('git-conflicts'),
     edit = require('string-editor'),
-    prompt = require('inquirer').prompt;
+    help = require('help-version')(usage()).help,
+    prompt = require('inquirer').prompt,
+    Queue = require('push-queue'),
+    sliceArgs = require('impartial');
 
 var spawn = require('child_process').spawn;
 
