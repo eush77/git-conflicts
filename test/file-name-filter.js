@@ -18,7 +18,7 @@ test('file-name-filter', function (t) {
       });
   };
 
-  t.plan(9);
+  t.plan(12);
   filter(null, []);
   filter([], []);
   filter(['foo'], ['foo']);
@@ -28,4 +28,7 @@ test('file-name-filter', function (t) {
   filter(['sub/'], ['sub/foo', 'sub/bar', 'sub/foobar']);
   filter(['sub/foo', 'sub/bar/'], ['sub/foo']);
   filter(['sub/foo', 'sub'], ['sub/foo', 'sub/bar', 'sub/foobar']);
+  filter(['.'], files);
+  filter(['./'], files);
+  filter(['./foo', './sub'], ['foo', 'sub/foo', 'sub/bar', 'sub/foobar']);
 });
