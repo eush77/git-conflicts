@@ -13,6 +13,8 @@ var chalk = require('chalk'),
     prompt = require('inquirer').prompt,
     Queue = require('push-queue');
 
+var execSync = require('child_process').execSync;
+
 
 function usage() {
   return [
@@ -55,17 +57,36 @@ function error (err) {
     });
   });
 
-  var fileNameStream = gitUnmergedFiles().on('error', error);
-
-  // Filter file names by patterns supplied in the command line.
+  // If patterns are supplied on the command line, search for unmerged files
+  // in the current working directory and filter each one by these patterns.
+  // Otherwise, search in the root directory.
   if (argv.length) {
-    fileNameStream = fileNameStream.pipe(fileNameFilter(argv));
+    var fileNameStream = gitUnmergedFiles().pipe(fileNameFilter(argv));
+  }
+  else {
+    var workdir = gitRootDirectory();
+
+    if (workdir != process.cwd()) {
+      debug('chdir: ' + workdir);
+    }
+
+    process.chdir(workdir);
+
+    var fileNameStream = gitUnmergedFiles();
   }
 
-  fileNameStream.on('data', function (filename) {
-    enqueue(filename.toString());
-  });
+  fileNameStream
+    .on('error', error)
+    .on('data', function (filename) { enqueue(filename.toString()) });
 }(process.argv.slice(2)));
+
+
+function gitRootDirectory () {
+  var cmd = 'git rev-parse --show-toplevel';
+
+  debug('running `' + cmd + '`');
+  return execSync(cmd).toString().trim();
+}
 
 
 // Add some comments explaining to user how to proceed with the conflict.
