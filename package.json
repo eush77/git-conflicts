@@ -41,7 +41,6 @@
     "clone-regexp": "^1.0.0",
     "debug": "^2.2.0",
     "help-version": "^1.0.0",
-    "impartial": "0.0.1",
     "inquirer": "^1.2.2",
     "push-queue": "^0.1.1",
     "string-editor": "github:eush77/string-editor#set-editor",
@@ -51,9 +50,11 @@
   },
   "devDependencies": {
     "after-all": "^2.0.2",
+    "array-to-stream": "^1.0.2",
     "coveralls": "^2.11.6",
     "group-by": "0.0.1",
     "nyc": "^8.3.2",
+    "stream-to-array": "^2.3.0",
     "tape": "^4.2.2"
   }
 }

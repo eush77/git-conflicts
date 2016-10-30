@@ -3,6 +3,7 @@
 
 var basename = require('./lib/basename'),
     debug = require('./lib/debug'),
+    fileNameFilter = require('./lib/file-name-filter'),
     gitUnmergedFiles = require('./lib/git-unmerged-files'),
     resolveFile = require('./lib/resolve-file');
 
@@ -10,8 +11,7 @@ var chalk = require('chalk'),
     edit = require('string-editor'),
     help = require('help-version')(usage()).help,
     prompt = require('inquirer').prompt,
-    Queue = require('push-queue'),
-    sliceArgs = require('impartial');
+    Queue = require('push-queue');
 
 
 function usage() {
@@ -55,17 +55,16 @@ function error (err) {
     });
   });
 
+  var fileNameStream = gitUnmergedFiles().on('error', error);
+
+  // Filter file names by patterns supplied in the command line.
   if (argv.length) {
-    // Get list of files from the command line.
-    argv.forEach(sliceArgs(enqueue, 0, 1));
+    fileNameStream = fileNameStream.pipe(fileNameFilter(argv));
   }
-  else {
-    gitUnmergedFiles()
-      .on('data', function (filename) {
-        enqueue(filename.toString());
-      })
-      .on('error', error);
-  }
+
+  fileNameStream.on('data', function (filename) {
+    enqueue(filename.toString());
+  });
 }(process.argv.slice(2)));
 
 
