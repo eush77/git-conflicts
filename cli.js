@@ -18,10 +18,14 @@ var execSync = require('child_process').execSync;
 
 function usage() {
   return [
-    'Usage:  git conflicts [file]...',
+    'Usage: git conflicts',
+    '       git conflicts .',
+    '       git conflicts [filename]...',
     '',
-    'Run conflict resolution for each file in order.',
-    'With no arguments, run conflict resolution for each unmerged path.'
+    'Run conflict resolution, optionally filtering each unmerged path',
+    'to match one of the file or directory names passed as arguments.',
+    'With no arguments, search in the root Git directory.',
+    'With arguments, search in the current working directory.'
   ].join('\n');
 }
 

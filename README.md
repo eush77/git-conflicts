@@ -18,10 +18,10 @@ Resolve merge conflicts in the editor. With `conflicts`, you do all the work you
 ## Usage
 
 ```
-git conflicts
+$ git conflicts
 ```
 
-Opens each conflict in the editor. You resolve the conflict, save and exit, and go to the next one.
+Searches for conflicts in unmerged files in the root Git directory and opens each one in the editor. You resolve one conflict, save and exit, and continue to the next.
 
 Conflict resolution is a process of transforming this:
 
@@ -46,10 +46,16 @@ Note that `conflicts` assumes you leave header and footer lines and put resolved
 To skip a conflict, exit without resolution and select `skip` in the prompt.
 
 ```
-git conflicts [file]...
+$ git conflicts .
 ```
 
-Run `conflicts` on specified files.
+Similar to the no-arguments case, but searches for conflicts in the current directory as opposed to the root directory.
+
+```
+$ git conflicts [filename]...
+```
+
+Similar to the above, but each unmerged file name is additionally filtered to match one of the `filenames` specified in the arguments. Each `filename` must be a path to a file or a directory, relative to the current working directory.
 
 ## Configuration
 
