@@ -11,7 +11,7 @@ var chalk = require('chalk'),
     edit = require('string-editor'),
     help = require('help-version')(usage()).help,
     prompt = require('inquirer').prompt,
-    Queue = require('push-queue');
+    through = require('through2');
 
 var execSync = require('child_process').execSync;
 
@@ -41,7 +41,7 @@ function error (err) {
 }
 
 
-(function main (argv) {
+(function main () {
   // Set up resolution callbacks.
   resolveFile = resolveFile.bind(null, {
     resolve: function (position, conflict, cb) {
@@ -53,22 +53,38 @@ function error (err) {
     onResolutionError: onResolutionError
   });
 
-  // Create resolution queue.
-  var enqueue = Queue(function (filename, cb) {
-    resolveFile(filename, function (err) {
-      if (err) return error(err);
-      cb();
-    });
-  });
+  unmergedFileNameStream()
+    .on('error', error)
+    .pipe(through(function (chunk, enc, next) {
+      var filename = chunk.toString();
 
-  // If patterns are supplied on the command line, search for unmerged files
-  // in the current working directory and filter each one by these patterns.
-  // Otherwise, search in the root directory.
-  if (argv.length) {
-    var fileNameStream = gitUnmergedFiles().pipe(fileNameFilter(argv));
+      resolveFile(filename, function (err) {
+        if (err) return error(err);
+        next();
+      });
+    }));
+}());
+
+
+// Create stream of unmerged file names.
+//
+// Handle command-line arguments: if patterns are supplied on the command
+// line, search for unmerged files in the current working directory and
+// filter each one by these patterns. Otherwise, search in the root directory.
+function unmergedFileNameStream () {
+  if (process.argv.length > 2) {
+    return gitUnmergedFiles().pipe(fileNameFilter(process.argv.slice(2)));
   }
   else {
-    var workdir = gitRootDirectory();
+    try {
+      var workdir = gitRootDirectory();
+    }
+    catch (err) {
+      var result = through();
+
+      process.nextTick(result.emit.bind(result, 'error', err));
+      return result;
+    }
 
     if (workdir != process.cwd()) {
       debug('chdir: ' + workdir);
@@ -76,20 +92,16 @@ function error (err) {
 
     process.chdir(workdir);
 
-    var fileNameStream = gitUnmergedFiles();
+    return gitUnmergedFiles();
   }
-
-  fileNameStream
-    .on('error', error)
-    .on('data', function (filename) { enqueue(filename.toString()) });
-}(process.argv.slice(2)));
+}
 
 
 function gitRootDirectory () {
   var cmd = 'git rev-parse --show-toplevel';
 
   debug('running `' + cmd + '`');
-  return execSync(cmd).toString().trim();
+  return execSync(cmd, { stdio: 'pipe' }).toString().trim();
 }
 
 
